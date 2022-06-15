@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="Model" />
+        <module name="BLL" />
+        <module name="UI" />
+        <module name="Application" />
+        <module name="DAL" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Application" options="-parameters" />
+      <module name="BLL" options="-parameters" />
+      <module name="DAL" options="-parameters" />
+      <module name="Model" options="-parameters" />
+      <module name="UI" options="-parameters" />
+    </option>
+  </component>
+</project>

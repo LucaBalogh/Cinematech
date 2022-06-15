@@ -1,0 +1,15 @@
+.border-info {
+  border-color: #224957;
+}
+
+.input::placeholder {
+  color: #fff;
+}
+.marginFH1{
+    margin-left: 100px;
+    margin-top: 75px;
+}
+.marginFH2{
+  margin-left: 100px;
+  margin-top: 100px;
+}

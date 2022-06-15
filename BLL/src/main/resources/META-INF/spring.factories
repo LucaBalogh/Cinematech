@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+ro.ubb.tt.bll.BLLAutoConfiguration
