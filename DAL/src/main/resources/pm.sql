@@ -1,6 +1,6 @@
 /*Run all the DROP statements below in order to recreate all the tables*/
 /*
-drop table locations;
+drop table movies;
 drop table users;
 */
 
@@ -13,10 +13,9 @@ CREATE TABLE users(
 	CONSTRAINT pk_users PRIMARY KEY(id)
 );
 
-CREATE TABLE locations(
+CREATE TABLE movies(
 	id serial,
-	city varchar(255) not null,
-	country varchar(255) not null,
+	name varchar(255) not null,
 	tip varchar(255) not null,
 	rating float,
 	user_id int,

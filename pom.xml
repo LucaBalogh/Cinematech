@@ -19,11 +19,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>ro.ubb.tt</groupId>
-    <artifactId>traveltech</artifactId>
+    <groupId>ro.uoradea</groupId>
+    <artifactId>Cinematech</artifactId>
     <version>0.0.1</version>
-    <name>traveltech</name>
-    <description>Traveltech</description>
+    <name>cinematech</name>
+    <description>Cinematech</description>
 
     <dependencies>
         <dependency>

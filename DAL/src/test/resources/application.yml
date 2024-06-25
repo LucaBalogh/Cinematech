@@ -1,5 +1,5 @@
 spring.datasource:
-  url: "jdbc:postgresql://localhost:5432/Traveltech"
+  url: "jdbc:postgresql://localhost:5050/Cinematech"
   username: "postgres"
   password: "postgres"
   driver-class-name: org.postgresql.Driver

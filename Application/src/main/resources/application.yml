@@ -1,5 +1,5 @@
 spring.datasource:
-  url: "jdbc:postgresql://localhost:5432/Traveltech"
+  url: "jdbc:postgresql://localhost:5050/Cinematech"
   username: "postgres"
   password: "postgres"
   driver-class-name: org.postgresql.Driver
@@ -19,6 +19,8 @@ spring.datasource:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+server:
+  port: 8090
 
 
 

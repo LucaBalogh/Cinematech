@@ -5,8 +5,8 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>traveltech</artifactId>
-        <groupId>ro.ubb.tt</groupId>
+        <artifactId>Cinematech</artifactId>
+        <groupId>ro.uoradea</groupId>
         <version>0.0.1</version>
     </parent>
 
@@ -33,7 +33,7 @@
         </dependency>
 
         <dependency>
-            <groupId>ro.ubb.tt</groupId>
+            <groupId>ro.uoradea</groupId>
             <artifactId>BLL</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>

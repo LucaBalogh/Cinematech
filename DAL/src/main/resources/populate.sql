@@ -9,12 +9,12 @@ values
 ('Butincu', 'Filip', 'filip@gmail.com', 'filip'),
 ('Veres', 'Ben', 'ben@gmail.com', 'ben');
 
-insert into locations(city, country, tip, rating, user_id)
+insert into movies(name, tip, rating, user_id)
 values
-('Ibiza','Spain','Sea', 5.5, 1),
-('Vienna','Austria','Mountain', 7.5, 3),
-('Minsk','Bulgaria','Sea', 8.5, 2),
-('Hong Kong','China','Mountain', 9.0, 1);
+('Deadpool','Action', 9.9, 1),
+('Deadpool 2','Action', 10, 3),
+('Indiana Jones','Adventure', 9.6, 2),
+('Dumb and dumber','Comedy', 9.0, 1);
 
 
 
