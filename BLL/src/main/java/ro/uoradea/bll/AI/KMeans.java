@@ -3,6 +3,7 @@ package ro.uoradea.bll.AI;
 import java.util.*;
 import java.util.stream.Collectors;
 import ro.uoradea.model.Movie;
+import ro.uoradea.model.enums.Type;
 
 public class KMeans {
     private static final Random random = new Random();
@@ -163,30 +164,34 @@ public class KMeans {
             value.sort(Comparator.comparing(Movie::getRating));
             Collections.reverse(value);
 
-            for(Movie movie : value){
-                int ok = 0;
-                if(movieSet10.size() < 10)
-                    for(Movie mov : userMovies) {
-                        if (movie.getName().equals(mov.getName()) || movie.getTip().equals(mov.getTip())) {
-                            ok = 1;
-                            break;
-                        }
-                    }
-                if(ok == 1 && (movie.getUser().getId() != user_id))
-                    movieSet10.add(movie);
+            for(Movie movie : value)
+                if(movieSet10.size() < 10){
+                if(userMovies.contains(movie) || !getUserMovieTypes(userMovies).contains(movie.getTip()))
+                    break;
+
+                movieSet10.add(movie);
             }
 
             allMovies.addAll(value);
         });
 
-        for(Movie loc : allMovies)
-            if(movieSet10.size() < 10 && (loc.getUser().getId() != user_id))
-                movieSet10.add(loc);
+        for(Movie movie : allMovies)
+            if(movieSet10.size() < 10 && (movie.getUser().getId() != user_id))
+                movieSet10.add(movie);
 
         List<Movie> movieTop10 = new ArrayList<>(movieSet10);
         movieTop10.sort(Comparator.comparing(Movie::getRating));
         Collections.reverse(movieTop10);
 
         return movieTop10;
+    }
+
+    private static Set<Type> getUserMovieTypes(List<Movie> userMovies){
+        Set<Type> typeSet = new HashSet<>();
+
+        for(Movie movie : userMovies)
+            typeSet.add(movie.getTip());
+
+        return typeSet;
     }
 }

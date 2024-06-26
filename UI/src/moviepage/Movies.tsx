@@ -298,7 +298,7 @@ const Movies = (props: IMovieProps): JSX.Element => {
 
         setTimeout(() => {
             getAllMoviesForCurrentUser();
-        }, 5000);
+        }, 7000);
     };
 
     const onEditClicked = (): void => {
