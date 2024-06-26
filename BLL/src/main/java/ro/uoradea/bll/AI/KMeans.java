@@ -7,39 +7,33 @@ import ro.uoradea.model.Movie;
 public class KMeans {
     private static final Random random = new Random();
 
-//    The k parameter determines the number of clusters, which we should provide in advance
-//    Distance encapsulates the way we're going to calculate the difference between two features
-//    K-Means terminates when the assignment stops changing for a few consecutive iterations.
-//    In addition to this termination condition, we can place an upper bound for the number of iterations, too. The maxIterations argument determines that upper bound
-//    When K-Means terminates, each centroid should have a few assigned features, hence we're using a Map<Centroid, List<Location>> as the return type.
-//    Basically, each map entry corresponds to a cluster.
-//    In each iteration, after assigning all records to their nearest centroid, first, we should compare the current assignments with the last iteration.
-//    If the assignments were identical, then the algorithm terminates. Otherwise, before jumping to the next iteration, we should relocate the centroids.
-
+    //    Aceasta functie implementeaza algoritmul k-means clustering pentru a grupa filmele în k clustere, folosind o metrica de distanta specificata si un numar maxim de iterari.
+    //    Genereaza k centroizi aleatori folosind functia randomCentroids.
+    //    Inițializează doua dictionare: clusters pentru a stoca clusterele curente și lastState pentru a stoca starea anterioară a clusterelor.
+    //    Se itereaza pana la maxIterations sau pana cand nu se mai modifica clusterii:
+    //    Cu isLastIteration se determina daca e ultima iterare sau nu
+    //    Pentru fiecare film din lista, gaseste cel mai apropiat centroid folosind functia nearestCentroid si il atribuie folosing functia assignToCluster.
+    //    Dacă este ultima iterare sau dacă clusterele nu s-au schimbat față de starea anterioară (lastState), algoritmul se oprește.
+    //    Dupa fiecare iterare, recalculeaza pozitiile centroizilor pe baza filmelor din clustere folosind funcția relocateCentroids, iar apoi reseteaza dictionarul clusters pentru următoarea iterare
     public static Map<Centroid, List<Movie>> fit(List<Movie> movies, int k, Distance distance, int maxIterations) {
-
         List<Centroid> centroids = randomCentroids(movies, k);
         Map<Centroid, List<Movie>> clusters = new HashMap<>();
         Map<Centroid, List<Movie>> lastState = new HashMap<>();
 
-        // iteram pentru un numar definit de ori
         for (int i = 0; i < maxIterations; i++) {
             boolean isLastIteration = i == maxIterations - 1;
 
-            // in each iteration we should find the nearest centroid for each record
             for (Movie loc : movies) {
                 Centroid centroid = nearestCentroid(loc, centroids, distance);
                 assignToCluster(clusters, loc, centroid);
             }
 
-            // daca am ajuns la ultima iteratie sau nu s a mai modificat nimic algoritmul se termina
             boolean shouldTerminate = isLastIteration || clusters.equals(lastState);
             lastState = clusters;
             if (shouldTerminate) {
                 break;
             }
 
-            // dupa fiecare iteratie facem relocarea centroizilor
             centroids = relocateCentroids(clusters);
             clusters = new HashMap<>();
         }
@@ -47,10 +41,12 @@ public class KMeans {
         return lastState;
     }
 
-//    Although each centroid can contain totally random coordinates, it's a good practice to generate random coordinates between the minimum and maximum possible values for each attribute.
-//    Generating random centroids without considering the range of possible values would cause the algorithm to converge more slowly.
-//    First, we should compute the minimum and maximum value for each attribute, and then, generate the random values between each pair of them.
-
+    //    Genereaza k centroizi aleatori pe baza caracteristicilor din lista de filme
+    //    Initializeaza liste goale pentru centroizi, valorile maxime si minime ale caracteristicilor
+    //    Parcurge fiecare film și actualizeaza valorile maxime si minime pentru fiecare caracteristica
+    //    Pentru fiecare centroid care trebuie creat:
+    //    Genereaza coordonate aleatorii pentru fiecare atribut intre valorile sale minime si maxime.
+    //    Creeaza un nou Centroid cu aceste coordonate si il adauga în lista de centroizi.
     private static List<Centroid> randomCentroids(List<Movie> movies, int k) {
         List<Centroid> centroids = new ArrayList<>();
         Map<String, Double> maxs = new HashMap<>();
@@ -58,10 +54,7 @@ public class KMeans {
 
         for (Movie loc : movies) {
             loc.getFeatures().forEach((key, value) -> {
-                // compara valoarea cu maximul curent si il alege pe cel mai mare
                 maxs.compute(key, (k1, max) -> max == null || value > max ? value : max);
-
-                // compara valoarea cu minimul curent si il alege pe cel mai mic
                 mins.compute(key, (k1, min) -> min == null || value < min ? value : min);
             });
         }
@@ -69,6 +62,7 @@ public class KMeans {
         Set<String> attributes = movies.stream()
                 .flatMap(e -> e.getFeatures().keySet().stream())
                 .collect(Collectors.toSet());
+
         for (int i = 0; i < k; i++) {
             Map<String, Double> coordinates = new HashMap<>();
             for (String attribute : attributes) {
@@ -83,7 +77,10 @@ public class KMeans {
         return centroids;
     }
 
-    // Functie care gaseste cel mai apropiat centroid pentru un film data
+    //    Aceasta functie gaseste centroidul cel mai apropiat de un film dat pe baza metricii de distanta furnizate
+    //    Initializeaza variabile pentru a urmari distanta minima si centroidul cel mai apropiat.
+    //    Parcurge fiecare centroid si calculează distanta pana la film.
+    //    Actualizeaza centroidul cel mai apropiat daca distanta curenta este mai mica decat distanta minima.
     private static Centroid nearestCentroid(Movie movie, List<Centroid> centroids, Distance distance) {
         double minimumDistance = Double.MAX_VALUE;
         Centroid nearest = null;
@@ -100,7 +97,9 @@ public class KMeans {
         return nearest;
     }
 
-    //    Assigneaza filmul data catre cel mai apropiat cluster
+    //    Aceasta functie atribuie un film celui mai apropiat cluster (centroid)
+    //    Foloseste compute pentru a actualiza lista de filme pentru centroidul dat.
+    //    Daca lista este null, initializeaz-o, iar apoi adauga filmul in ea.
     private static void assignToCluster(Map<Centroid, List<Movie>> clusters, Movie movie, Centroid centroid) {
         clusters.compute(centroid, (key, list) -> {
             if (list == null) {
@@ -112,9 +111,11 @@ public class KMeans {
         });
     }
 
-    //    Daca dupa o iteratie un centroid nu a primit filme noi nu il realocam
-    //    Altfel ar trebui sa realocam coordonatele centroidului catre filmul mediu din cele ale cluster-ului
-    private static Centroid average(Centroid centroid, List<Movie> movies) {
+  //    Aceasta functie recalculeaza coordonatele centroidului pe baza mediei caracteristicilor filmelor din clusterul sau.
+  //    Daca lista de filme este null sau goala, returnează centroidul curent.
+  //    Initializeaza un dictionar cu zero pentru fiecare caracteristica.
+  //    Face media fiecarei caracteristici din toate filmele si returneaza un nou Centroid cu coordonatele mediate.
+  private static Centroid average(Centroid centroid, List<Movie> movies) {
         if (movies == null || movies.isEmpty()) {
             return centroid;
         }
@@ -134,14 +135,23 @@ public class KMeans {
         return new Centroid(average);
     }
 
-    //  Realoca centroizii
+    //    Aceasta functie realoca toti centroizii prin medierea coordonatelor filmelor din clusterul lor respectiv.
     private static List<Centroid> relocateCentroids(Map<Centroid, List<Movie>> clusters) {
         return clusters.entrySet().stream().map(e -> average(e.getKey(), e.getValue())).collect(Collectors.toList());
     }
 
-    // Functie care genereaza top10 filme in functie de utilizatorul logat
+    //    Aceasta functie genereaza un top 10 filme recomandate pentru un utilizator specific, pe baza filmelor pe care le-a vizionat anterior si a filmelor disponibile
+    //    Filmele sunt grupate în 10 clustere folosind algoritmul k-means (KMeans.fit) cu distanța Euclidiana și maxim 200 de iterari.
+    //    Clusters conține dictionarul cu centroizii și listele de filme asociate fiecărui centroid.
+    //    Clusterele sunt sortate în functie de coordonatele centroidului, intr-o ordine descrescatoare si este stocată în clustersS.
+    //    Filmele din cluster sunt sortate descrescator după rating.
+    //    Se verifică dacă setul movieSet10 are mai puțin de 10 filme.
+    //    Se verifică dacă filmul nu este deja vizionat de utilizator (în funcție de nume sau tip).
+    //    Daca filmul indeplineste conditiile si nu apartine utilizatorului logat, este adaugat în movieSet10.
+    //    Dupa parcurgerea clusterelor, dacă movieSet10 contine mai puțin de 10 filme, se adauga filme din allMovies care nu apartin utilizatorului logat.
+    //    Filmele din movieSet10 sunt sortate descrescator după rating, iar apoi lista de filme e returnata
     public static List<Movie> getTop10(List<Movie> movies, List<Movie> userMovies, int user_id){
-        Map<Centroid, List<Movie>> clusters = KMeans.fit(movies, 10, new EuclideanDistance(), 200);
+        Map<Centroid, List<Movie>> clusters = KMeans.fit(movies, 10, new EuclideanDistance(), 1000);
 
         Map<Centroid, List<Movie>> clustersS = clusters.
                 entrySet()
@@ -155,10 +165,8 @@ public class KMeans {
         Set<Movie> movieSet10 = new HashSet<>();
         List<Movie> allMovies = new ArrayList<>();
 
-        // Printing the cluster configuration
         clustersS.forEach((key, value) -> {
 
-            // Sorting the coordinates to see the most significant tags first.
             value.sort(Comparator.comparing(Movie::getRating));
             Collections.reverse(value);
 

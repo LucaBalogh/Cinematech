@@ -88,6 +88,12 @@ public class Movie extends Entity implements Serializable{
         return features;
     }
 
+    public void setFeatures(Map<String, Double> features) {
+        if (features.containsKey("rating")) {
+            this.rating = Float.parseFloat(features.get("rating").toString());
+        }
+    }
+
     @Override
     public String toString() {
         return "Movie {" +
