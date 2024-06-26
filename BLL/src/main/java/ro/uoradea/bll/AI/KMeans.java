@@ -42,9 +42,7 @@ public class KMeans {
     }
 
     //    Genereaza k centroizi aleatori pe baza caracteristicilor din lista de filme
-    //    Initializeaza liste goale pentru centroizi, valorile maxime si minime ale caracteristicilor
     //    Parcurge fiecare film și actualizeaza valorile maxime si minime pentru fiecare caracteristica
-    //    Pentru fiecare centroid care trebuie creat:
     //    Genereaza coordonate aleatorii pentru fiecare atribut intre valorile sale minime si maxime.
     //    Creeaza un nou Centroid cu aceste coordonate si il adauga în lista de centroizi.
     private static List<Centroid> randomCentroids(List<Movie> movies, int k) {
@@ -77,7 +75,7 @@ public class KMeans {
         return centroids;
     }
 
-    //    Aceasta functie gaseste centroidul cel mai apropiat de un film dat pe baza metricii de distanta furnizate
+    //    Aceasta functie gaseste centroidul cel mai apropiat de un film dat pe baza metricii de distanta furnizate.
     //    Initializeaza variabile pentru a urmari distanta minima si centroidul cel mai apropiat.
     //    Parcurge fiecare centroid si calculează distanta pana la film.
     //    Actualizeaza centroidul cel mai apropiat daca distanta curenta este mai mica decat distanta minima.
@@ -99,7 +97,7 @@ public class KMeans {
 
     //    Aceasta functie atribuie un film celui mai apropiat cluster (centroid)
     //    Foloseste compute pentru a actualiza lista de filme pentru centroidul dat.
-    //    Daca lista este null, initializeaz-o, iar apoi adauga filmul in ea.
+    //    Daca lista este null, se va initializa una noua, iar apoi adauga filmul in ea.
     private static void assignToCluster(Map<Centroid, List<Movie>> clusters, Movie movie, Centroid centroid) {
         clusters.compute(centroid, (key, list) -> {
             if (list == null) {
@@ -141,18 +139,14 @@ public class KMeans {
     }
 
     //    Aceasta functie genereaza un top 10 filme recomandate pentru un utilizator specific, pe baza filmelor pe care le-a vizionat anterior si a filmelor disponibile
-    //    Filmele sunt grupate în 10 clustere folosind algoritmul k-means (KMeans.fit) cu distanța Euclidiana și maxim 200 de iterari.
+    //    Filmele sunt grupate în 10 clustere folosind algoritmul k-means cu distanța Euclidiana și maxim 1000 de iterari.
     //    Clusters conține dictionarul cu centroizii și listele de filme asociate fiecărui centroid.
     //    Clusterele sunt sortate în functie de coordonatele centroidului, intr-o ordine descrescatoare si este stocată în clustersS.
-    //    Filmele din cluster sunt sortate descrescator după rating.
-    //    Se verifică dacă setul movieSet10 are mai puțin de 10 filme.
-    //    Se verifică dacă filmul nu este deja vizionat de utilizator (în funcție de nume sau tip).
     //    Daca filmul indeplineste conditiile si nu apartine utilizatorului logat, este adaugat în movieSet10.
     //    Dupa parcurgerea clusterelor, dacă movieSet10 contine mai puțin de 10 filme, se adauga filme din allMovies care nu apartin utilizatorului logat.
     //    Filmele din movieSet10 sunt sortate descrescator după rating, iar apoi lista de filme e returnata
     public static List<Movie> getTop10(List<Movie> movies, List<Movie> userMovies, int user_id){
         Map<Centroid, List<Movie>> clusters = KMeans.fit(movies, 10, new EuclideanDistance(), 1000);
-
         Map<Centroid, List<Movie>> clustersS = clusters.
                 entrySet()
                 .stream()
@@ -166,7 +160,6 @@ public class KMeans {
         List<Movie> allMovies = new ArrayList<>();
 
         clustersS.forEach((key, value) -> {
-
             value.sort(Comparator.comparing(Movie::getRating));
             Collections.reverse(value);
 
